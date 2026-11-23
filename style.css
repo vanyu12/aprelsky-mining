@@ -225,6 +225,10 @@ button.primary:hover:not(:disabled){ box-shadow:0 0 18px rgba(55,192,255,.45); }
 .modal-reward{ font-size:16px; font-weight:700; color:var(--good); margin-bottom:16px; }
 .modal-btn{ width:100%; }
 
+.qty-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+.qty{ background:var(--panel2); color:var(--muted); border:1px solid var(--border); padding:6px 12px; font-size:13px; border-radius:8px; }
+.qty.active{ background:var(--accent); color:#fff; border-color:var(--accent); }
+
 @keyframes glowPulse{ 0%,100%{ box-shadow:0 0 8px rgba(55,192,255,.22);} 50%{ box-shadow:0 0 16px rgba(55,192,255,.55);} }
 .cell.form.filled{ animation:glowPulse 2.6s ease-in-out infinite; }
 @keyframes floaty{ 0%,100%{ transform:translateY(0);} 50%{ transform:translateY(-2px);} }

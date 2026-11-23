@@ -5,6 +5,26 @@
   Game.applyOffline();
   UI.init();
 
+  // PWA: регистрация service worker и установка приложения
+  if ('serviceWorker' in navigator && location.protocol === 'https:') {
+    window.addEventListener('load', () => navigator.serviceWorker.register('sw.js').catch(() => {}));
+  }
+  let deferredPrompt = null;
+  window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    const ib = document.getElementById('installBtn');
+    if (ib) ib.classList.remove('hidden');
+  });
+  const installBtn = document.getElementById('installBtn');
+  if (installBtn) installBtn.addEventListener('click', async () => {
+    if (!deferredPrompt) { UI.toast('Установка недоступна в этом браузере', 'warn'); return; }
+    deferredPrompt.prompt();
+    try { await deferredPrompt.userChoice; } catch (e) {}
+    deferredPrompt = null;
+    installBtn.classList.add('hidden');
+  });
+
   // Первый жест пользователя разблокирует звук в браузере
   const unlock = () => {
     Sfx.init();

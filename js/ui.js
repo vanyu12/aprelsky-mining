@@ -3,6 +3,7 @@
 const UI = {};
 let shopTab = 'forms';
 let currentView = 'farm';
+let buyQty = 1;
 
 function $(id) { return document.getElementById(id); }
 
@@ -41,12 +42,18 @@ UI.init = function () {
   if (rlist) rlist.addEventListener('click', (e) => {
     const b = e.target.closest('[data-research]');
     if (!b) return;
-    const r = Game.buyResearch(b.dataset.research);
-    if (!r.ok) {
-      if (r.reason === 'no-money') UI.toast('Не хватает денег', 'error');
-      else if (r.reason === 'no-crystals') UI.toast('Не хватает кристаллов', 'error');
-      else if (r.reason === 'locked') UI.toast('Сначала изучи предыдущее', 'warn');
-      else if (r.reason === 'maxed') UI.toast('Уже изучено', 'warn');
+    const times = buyQty === 'max' ? 100 : buyQty;
+    let bought = 0, last = null;
+    for (let i = 0; i < times; i++) {
+      const r = Game.buyResearch(b.dataset.research);
+      if (!r.ok) { last = r; break; }
+      bought++;
+    }
+    if (!bought && last) {
+      if (last.reason === 'no-money') UI.toast('Не хватает денег', 'error');
+      else if (last.reason === 'no-crystals') UI.toast('Не хватает кристаллов', 'error');
+      else if (last.reason === 'locked') UI.toast('Сначала изучи предыдущее', 'warn');
+      else if (last.reason === 'maxed') UI.toast('Уже изучено', 'warn');
       return;
     }
     UI.render();
@@ -62,6 +69,14 @@ UI.init = function () {
     shopTab = b.dataset.shop;
     UI.renderShop();
     UI.markShopTabs();
+  });
+
+  const qtyRow = $('qtyRow');
+  if (qtyRow) qtyRow.addEventListener('click', (e) => {
+    const b = e.target.closest('[data-qty]');
+    if (!b) return;
+    buyQty = b.dataset.qty === 'max' ? 'max' : parseInt(b.dataset.qty, 10);
+    document.querySelectorAll('#qtyRow .qty').forEach(x => x.classList.toggle('active', x === b));
   });
 
   // Магазин: покупки
@@ -367,18 +382,26 @@ UI.card = function (name, desc, buyKey, price, btnText, owned, img) {
 UI.handleBuy = function (key, btn) {
   const parts = key.split(':');
   const type = parts[0], sub = parts[1];
-  let r;
-  if (type === 'form') r = Game.buyForm();
-  else if (type === 'gpu') r = Game.buyGpu(sub);
-  else if (type === 'cooler') r = Game.buyCooler(sub);
-  else if (type === 'upgrade') r = Game.buyUpgrade(sub);
-  if (r && !r.ok) {
-    if (r.reason === 'no-money') { btn && btn.classList.add('no-money'); setTimeout(() => btn && btn.classList.remove('no-money'), 500); UI.toast('Не хватает денег', 'error'); }
-    else if (r.reason === 'no-form') UI.toast('Сначала поставь форму под видеокарту', 'warn');
-    else if (r.reason === 'no-space') UI.toast('Нет места на ферме', 'warn');
-    else if (r.reason === 'maxed') UI.toast('Уже максимум', 'warn');
+  const times = buyQty === 'max' ? 500 : buyQty;
+  let bought = 0, last = null;
+  for (let i = 0; i < times; i++) {
+    let r;
+    if (type === 'form') r = Game.buyForm();
+    else if (type === 'gpu') r = Game.buyGpu(sub);
+    else if (type === 'cooler') r = Game.buyCooler(sub);
+    else if (type === 'upgrade') r = Game.buyUpgrade(sub);
+    if (!r) break;
+    if (!r.ok) { last = r; break; }
+    bought++;
+  }
+  if (!bought && last) {
+    if (last.reason === 'no-money') { btn && btn.classList.add('no-money'); setTimeout(() => btn && btn.classList.remove('no-money'), 500); UI.toast('Не хватает денег', 'error'); }
+    else if (last.reason === 'no-form') UI.toast('Сначала поставь форму под видеокарту', 'warn');
+    else if (last.reason === 'no-space') UI.toast('Нет места на ферме', 'warn');
+    else if (last.reason === 'maxed') UI.toast('Уже максимум', 'warn');
     return;
   }
+  if (bought > 1) UI.toast('Куплено: ' + bought, 'good');
   UI.render();
 };
 

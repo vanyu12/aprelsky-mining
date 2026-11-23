@@ -4,7 +4,10 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Апрельский Майнинг</title>
-<link rel="icon" href="assets/logo.jpg">
+<link rel="icon" href="assets/icon-192.png">
+<link rel="apple-touch-icon" href="assets/icon-192.png">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f1220">
 <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -71,6 +74,12 @@
     <section class="view" id="view-shop">
       <h2>Магазин оборудования</h2>
       <div class="shop-tabs" id="shopTabs"></div>
+      <div class="qty-row" id="qtyRow">
+        <span class="dim">Покупать:</span>
+        <button class="qty active" data-qty="1">×1</button>
+        <button class="qty" data-qty="10">×10</button>
+        <button class="qty" data-qty="max">MAX</button>
+      </div>
       <div id="shopItems" class="shop-items"></div>
     </section>
 
@@ -136,6 +145,7 @@
         <label class="set-row"><span>Тема</span>
           <select id="setTheme"><option value="dark">Тёмная</option><option value="light">Светлая</option></select>
         </label>
+        <div class="set-row"><span>Приложение</span><button id="installBtn" class="ghost hidden">Установить на устройство</button></div>
         <label class="set-row"><span>Автообмен</span><input type="checkbox" id="setAutoSell"></label>
       </div>
       <div class="card">
