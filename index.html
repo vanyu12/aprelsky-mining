@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Апрельский Майнинг</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<canvas id="bg"></canvas>
+<div id="app">
+  <header>
+    <div class="brand"><img class="logo" src="assets/logo.jpg" alt=""><span>Апрельский Майнинг</span></div>
+    <div class="top-balances">
+      <div class="balance money"><span class="lbl">💰 Деньги</span><span class="val" id="money">0</span></div>
+      <div class="balance crypto"><span class="lbl">🪙 Крипта</span><span class="val" id="crypto">0</span></div>
+      <div class="balance"><span class="lbl">⚡ Хешрейт</span><span class="val" id="hashrate">0</span></div>
+      <div class="balance temp" id="tempBox"><span class="lbl">🌡 Охлаждение</span><span class="val" id="cooling">—</span></div>
+      <div class="balance crystals"><span class="lbl">💎 Кристаллы</span><span class="val" id="crystals">0</span></div>
+    </div>
+  </header>
+
+  <div class="progress">
+    <div class="prow"><span>Майнинг</span><span id="rate">0 крипты/с</span></div>
+    <div class="bar"><div class="fill" id="minefill"></div></div>
+    <div class="prow sub">
+      <span id="profit">Доход: 0 💰/с</span>
+      <label class="auto"><input type="checkbox" id="autoSell"> Автообмен</label>
+    </div>
+  </div>
+
+  <nav class="nav" id="nav">
+    <button class="navbtn active" data-view="farm">⛏️ Ферма</button>
+    <button class="navbtn" data-view="shop">🛒 Магазин</button>
+    <button class="navbtn" data-view="quests">📜 Квесты</button>
+    <button class="navbtn" data-view="events">✨ События</button>
+    <button class="navbtn" data-view="research">🔬 Лаборатория</button>
+    <button class="navbtn" data-view="prestige">💎 Престиж</button>
+    <button class="navbtn" data-view="achievements">🏆 Достижения</button>
+    <button class="navbtn" data-view="stats">📊 Статистика</button>
+    <button class="navbtn" data-view="settings">⚙️ Настройки</button>
+  </nav>
+
+  <main>
+    <!-- ФЕРМА -->
+    <section class="view active" id="view-farm">
+      <div class="hero">
+        <div class="hero-glow"></div>
+        <div class="hero-content">
+          <div class="hero-title">Апрельский Майнинг</div>
+          <div class="hero-sub">Собери ферму · добудь крипту · обменяй на деньги</div>
+        </div>
+      </div>
+      <h2>Моя ферма</h2>
+      <div class="farm-info" id="farmInfo">Форм: 0 · Видеокарт: 0 · Кулеров: 0</div>
+      <div id="grid" class="grid"></div>
+      <div class="actions">
+        <button id="sellBtn" class="primary">Обменять крипту на деньги</button>
+        <button id="collectBtn">📥 Собрать офлайн-крипту</button>
+      </div>
+      <div class="bonus-row">
+        <button id="dailyBtn">🎁 Ежедневная награда</button>
+        <button id="boostBtn">⚡ Буст ×2 (60с)</button>
+        <label class="auto"><input type="checkbox" id="autoBuy"> Авто-скупка</label>
+      </div>
+      <div id="offlineMsg" class="offline hidden"></div>
+    </section>
+
+    <!-- МАГАЗИН -->
+    <section class="view" id="view-shop">
+      <h2>Магазин оборудования</h2>
+      <div class="shop-tabs" id="shopTabs"></div>
+      <div id="shopItems" class="shop-items"></div>
+    </section>
+
+    <!-- КВЕСТЫ -->
+    <section class="view" id="view-quests">
+      <h2>Квесты</h2>
+      <div id="questList" class="shop-items"></div>
+    </section>
+
+    <!-- ЛАБОРАТОРИЯ -->
+    <section class="view" id="view-research">
+      <h2>Лаборатория</h2>
+      <div id="researchList" class="shop-items"></div>
+    </section>
+
+    <!-- СОБЫТИЯ -->
+    <section class="view" id="view-events">
+      <h2>События</h2>
+      <div class="card">
+        <p>Случайное событие даёт временное усиление — хешрейт, охлаждение или курс. Используй для рывка.</p>
+        <button id="eventBtn" class="primary">Испытать удачу</button>
+      </div>
+      <div id="eventList"></div>
+    </section>
+
+    <!-- ПРЕСТИЖ -->
+    <section class="view" id="view-prestige">
+      <h2>Реинвест (престиж)</h2>
+      <div class="card prestige-info">
+        <p>Обнули ферму и апгрейды, получи <b>Апрель-кристаллы</b> и покупай на них постоянные бонусы. Они сохраняются после престижа.</p>
+        <img class="crystal-ico" src="assets/crystal.jpg" alt="">
+        <div class="prestige-row">
+          <div>Заработано за заход: <b id="prestigeRunEarned">0</b> 💰</div>
+          <div>Дадут кристаллов: <b id="prestigeGain">0</b> 💎</div>
+        </div>
+        <button id="prestigeBtn" class="primary">Реинвест</button>
+      </div>
+      <h3 class="subhead">Постоянные бонусы</h3>
+      <div id="permItems" class="shop-items"></div>
+    </section>
+
+    <!-- ДОСТИЖЕНИЯ -->
+    <section class="view" id="view-achievements">
+      <h2>Достижения <span id="achCount" class="dim"></span></h2>
+      <div id="achList" class="ach-list"></div>
+    </section>
+
+    <!-- СТАТИСТИКА -->
+    <section class="view" id="view-stats">
+      <h2>Статистика</h2>
+      <div id="statsList" class="stats-list"></div>
+    </section>
+
+    <!-- НАСТРОЙКИ -->
+    <section class="view" id="view-settings">
+      <h2>Настройки</h2>
+      <div class="card settings">
+        <label class="set-row"><span>Звук</span><input type="checkbox" id="setSound"></label>
+        <label class="set-row"><span>Эмбиент (фон)</span><input type="checkbox" id="setAmbient"></label>
+        <label class="set-row"><span>Формат чисел</span>
+          <select id="setFormat"><option value="short">Короткий (K/M/B)</option><option value="sci">Научный (1.2e6)</option></select>
+        </label>
+        <label class="set-row"><span>Тема</span>
+          <select id="setTheme"><option value="dark">Тёмная</option><option value="light">Светлая</option></select>
+        </label>
+        <label class="set-row"><span>Автообмен</span><input type="checkbox" id="setAutoSell"></label>
+      </div>
+      <div class="card">
+        <h3 class="subhead">Сохранение</h3>
+        <div class="save-row">
+          <button id="exportBtn">Экспорт сейва</button>
+          <button id="importBtn">Импорт сейва</button>
+        </div>
+        <textarea id="saveBox" placeholder="Сюда можно вставить строку сейва для импорта или скопировать свою"></textarea>
+        <div class="save-row">
+          <button id="resetBtn" class="danger">Сбросить игру</button>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span class="dim">Апрельский Майнинг · оригинальная игра по мотивам жанра</span>
+  </footer>
+</div>
+
+<script src="js/data.js"></script>
+<script src="js/format.js"></script>
+<script src="js/audio.js"></script>
+<script src="js/effects.js"></script>
+<script src="js/systems.js"></script>
+<script src="js/ui.js"></script>
+<script src="js/main.js"></script>
+</body>
+</html>
